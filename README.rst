@@ -134,10 +134,8 @@ Shows the main menu of makepile.py and possible targets.
 To Do
 ==============================
 
-- ``[ ]`` 3 add requirements file.
 - ``[ ]`` 4 create a sub folder in target_dir
-- ``[ ]`` 4 upload to Github.
-- ``[ ]`` 5 better/colorful output using click.
+- ``[ ]`` 5 better/colorful output using click and colorama.
 - ``[ ]`` 5 icon for standalone Windows version.
 - ``[ ]`` 5 if there is a file name clash, automatically add a UID.
 - ``[ ]`` 5 open the target directory in explorer/finder etc.
@@ -146,6 +144,8 @@ To Do
 - ``[ ]`` 5 test on macOS.
 - ``[ ]`` 5 upload to pypi.
 - ``[ ]`` 8 text is not supported yet, should we support it?
+- ``[x]`` 3 add requirements file.
+- ``[x]`` 4 upload to Github.
 - ``[x]`` 5 using makepile.py as makefile.
 
 
