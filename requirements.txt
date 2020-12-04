@@ -1,3 +1,4 @@
+colorama==0.4.4
 click==7.1.2
 Pillow==8.0.1
 PySimpleGUI==4.32.1

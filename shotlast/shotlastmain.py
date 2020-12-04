@@ -236,6 +236,7 @@ def choose_target_dir_with_sg(default_dir):
 def choose_target_dir(default_dir):
     # chosen_dir = choose_target_dir_with_click(default_dir)
     chosen_dir = choose_target_dir_with_sg(default_dir)
+    chosen_dir = os.path.normpath(chosen_dir)
     return chosen_dir
 
 
