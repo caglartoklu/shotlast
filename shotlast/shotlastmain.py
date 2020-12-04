@@ -283,6 +283,7 @@ def main():
         print(target_dir)
         return
 
+    click.launch(target_dir)
     start_shots(target_dir=target_dir, sleep_duration=sleep_duration)
 
 
