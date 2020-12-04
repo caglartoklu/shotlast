@@ -48,12 +48,12 @@ def get_datetime_stamp(sep_date="", sep_group="_", sep_time="", moment=None):
     Requires:
         import datetime
     >>> import datetime
-    >>> some_date = datetime.datetime(2012, 12, 12, 12, 1, 2)
-    >>> print(get_datetime_stamp(moment=some_date))
+    >>> date1 = datetime.datetime(2012, 12, 12, 12, 1, 2)
+    >>> print(get_datetime_stamp(moment=date1))
     20121212_120102
-    >>> print(get_datetime_stamp(sep_date="/", sep_group="-", moment=some_date))
+    >>> print(get_datetime_stamp(sep_date="/", sep_group="-", moment=date1))
     2012/12/12-120102
-    >>> print(get_datetime_stamp(sep_group="-", sep_time=":", moment=some_date))
+    >>> print(get_datetime_stamp(sep_group="-", sep_time=":", moment=date1))
     20121212-12:01:02
     """
     date_format = (sep_date.join(["%Y", "%m", "%d"]) +
@@ -199,7 +199,7 @@ def choose_target_dir_with_sg(default_dir):
     """
     layout = [
         [sg.T("")],
-        [sg.Text("Choose a directory to store the captured clipboard items: ")],
+        [sg.Text("Choose a directory to store the captured clipboard items:")],
         [sg.Input(default_dir, key="__directory"),
          sg.FolderBrowse()],
         [sg.Button("Submit")]
