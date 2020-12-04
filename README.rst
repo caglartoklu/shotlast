@@ -129,6 +129,25 @@ Shows the main menu of makepile.py and possible targets.
     Possible targets:
     ['clean', 'install', 'linecount', 'pyinstaller', 'readme', 'uninstall']
 
+Development Environment
+---------------------------------
+
+::
+
+    pip -m venv v1
+    cd v1
+    cd Scripts
+    activate
+    cd /path/to/shotlast_source_dir
+    pip install -r requirements.txt
+
+    # the following lines are optional.
+    # these are required for code quality, packing, etc
+    pip install pyinstaller  # makepile uses this.
+    pip install rst2html5  # makepile uses this.
+
+makepile can also use `cloc https://github.com/AlDanial/cloc`_ to count the lines in the project.
+
 
 
 To Do
