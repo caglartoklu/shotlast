@@ -95,6 +95,7 @@ def install():
     """
     # cmd = "python setup.py install"
     cmd = "python -m pip install -e ."
+    print(cmd)
     os.system(cmd)
 
 
@@ -103,6 +104,7 @@ def uninstall():
     Uninstalls the package using pip.
     """
     cmd = "python -m pip uninstall shotlast"
+    print(cmd)
     os.system(cmd)
 
 
@@ -143,6 +145,7 @@ def pyinstaller():
     requires:
     pip install pyinstaller
     """
+    install()
     readme()
     main_source_file = os.path.normpath("shotlast/shotlastmain.py")
     # root_name = os.path.split(main_source_file)[1]  # filename.py
