@@ -204,7 +204,7 @@ def linecount():
     Requires:
     https://github.com/AlDanial/cloc
     """
-    cmd = "cloc ."
+    cmd = "cloc . --exclude-dir=v1"
     print(cmd)
     os.system(cmd)
 
