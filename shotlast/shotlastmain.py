@@ -173,11 +173,9 @@ def get_candidate_dir():
     if system == "Windows":
         target_dir = os.path.join(home_dir, "Pictures")
     elif system == "Darwin":
-        # TODO: 5 Pictures directory for Mac?
-        pass
+        target_dir = os.path.join(home_dir, "Pictures")
     elif system == "Linux":
-        # TODO: 5 Pictures directory for Linux?
-        pass
+        target_dir = os.path.join(home_dir, "Pictures")
 
     if os.path.isdir(target_dir):  # pylint: disable=no-else-return
         return target_dir
