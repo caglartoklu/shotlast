@@ -151,27 +151,6 @@ makepile can also use `cloc https://github.com/AlDanial/cloc`_ to count the line
 
 
 
-To Do
-==============================
-
-- ``[ ]`` 4 create a sub folder in target_dir
-- ``[x]`` 5 use pysimplegui for directory selection.
-- ``[ ]`` 5 the file name suffix could be optional instead of `clip`.
-- ``[ ]`` 6 better/colorful output using click and colorama.
-- ``[ ]`` 6 icon for standalone Windows version.
-- ``[x]`` 6 if there is a file name clash, automatically add a UID.
-- ``[ ]`` 6 open the target directory in explorer/finder etc.
-- ``[ ]`` 6 standalone Windows version.
-- ``[ ]`` 6 test on Linux.
-- ``[ ]`` 6 test on macOS.
-- ``[ ]`` 6 upload to pypi.
-- ``[ ]`` 8 text is not supported yet, should we support it?
-- ``[x]`` 3 add requirements file.
-- ``[x]`` 4 upload to Github.
-- ``[x]`` 5 using makepile.py as makefile.
-
-
-
 Licence
 ==============================
 
