@@ -23,7 +23,12 @@ setuptools.setup(
 
     packages=setuptools.find_packages(),
 
-    install_requires=[],
+    install_requires=[
+        "colorama",
+        "click",
+        "Pillow",
+        "PySimpleGUI",
+    ],
 
     # https://pypi.org/classifiers/
     classifiers=[

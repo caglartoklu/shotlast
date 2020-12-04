@@ -85,6 +85,7 @@ Compatibility and Requirements
 
 **Runtime Requirements**
 
+- Required Python packages are defined in `setup.py <setup.py>`_ file.
 - Officially, minimum tested Python version supported is 3.7
 - Untested: should work with Python 3.5 and above, but not lower, since it uses argparse and pathlib.
 
@@ -139,11 +140,6 @@ Development Environment
     activate
     cd /path/to/shotlast_source_dir
     pip install -r requirements.txt
-
-    # the following lines are optional.
-    # these are required for code quality, packing, etc
-    pip install pyinstaller  # makepile uses this.
-    pip install rst2html5  # makepile uses this.
 
 makepile can also use `cloc <https://github.com/AlDanial/cloc>`_ to count the lines in the project.
 
