@@ -16,6 +16,8 @@ When a new image is detected, it saves the contents of clipboard with date and t
 
 In a session, your set of files will look like this:
 
+.. image:: https://user-images.githubusercontent.com/2071639/101141123-e6924400-3624-11eb-83a7-2df01d27894b.png
+
 .. image:: https://user-images.githubusercontent.com/2071639/101067853-14d23e00-35a9-11eb-86b6-a75bc6351817.png
 
 
