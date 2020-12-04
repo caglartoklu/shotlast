@@ -23,6 +23,12 @@ import uuid
 from PIL import ImageChops
 from PIL import ImageGrab
 import click
+import PySimpleGUI as sg
+
+
+sg.theme("DarkGrey7")
+# for other themes:
+# https://www.geeksforgeeks.org/themes-in-pysimplegui/
 
 
 def get_datetime_stamp(sep_date="", sep_group="_", sep_time="", moment=None):
@@ -168,13 +174,55 @@ def get_candidate_dir():
         return ""
 
 
-def choose_target_dir(default_dir):
+def choose_target_dir_with_click(default_dir):
+    """
+    Make the user to type a directory using click package.
+
+    requires:
+        import click
+    """
     chosen_dir = default_dir
     marker = '# Everything below is ignored\n'
     message = click.edit(default_dir + '\n\n' + marker)
 
     if message is not None:
         chosen_dir = message.split(marker, 1)[0].rstrip('\n')
+    return chosen_dir
+
+
+def choose_target_dir_with_sg(default_dir):
+    """
+    Make the user to type a directory using PySimpleGUI package.
+
+    requires:
+        import PySimpleGUI as sg
+    """
+    layout = [
+        [sg.T("")],
+        [sg.Text("Choose a directory to store the captured clipboard items: ")],
+        [sg.Input(default_dir, key="__directory"),
+         sg.FolderBrowse()],
+        [sg.Button("Submit")]
+    ]
+
+    window = sg.Window('shotlast', layout, size=(500, 150))
+
+    chosen_dir = None
+    while True:
+        event, values = window.read()
+        if event in {sg.WIN_CLOSED, "Exit"}:
+            break
+        elif event == "Submit":
+            chosen_dir = values["__directory"]
+            break
+
+    window.close()
+    return chosen_dir
+
+
+def choose_target_dir(default_dir):
+    # chosen_dir = choose_target_dir_with_click(default_dir)
+    chosen_dir = choose_target_dir_with_sg(default_dir)
     return chosen_dir
 
 
@@ -215,6 +263,7 @@ def main():
     """
     entry point of the module.
     """
+
     # os.chdir(os.path.abspath(os.path.dirname(__file__)))
     settings = get_settings()
     sleep_duration = int(settings["sleep_duration"])
@@ -224,6 +273,15 @@ def main():
         candidate_target_dir = get_candidate_dir()
         target_dir = choose_target_dir(default_dir=candidate_target_dir)
         settings["target_dir"] = target_dir
+
+    if target_dir is None:
+        print("A target directory is not selected.")
+        return
+
+    if not os.path.isdir(target_dir):
+        print("Target is not a valid directory:")
+        print(target_dir)
+        return
 
     start_shots(target_dir=target_dir, sleep_duration=sleep_duration)
 

@@ -153,7 +153,7 @@ To Do
 ==============================
 
 - ``[ ]`` 4 create a sub folder in target_dir
-- ``[ ]`` 5 use pysimplegui for directory selection.
+- ``[x]`` 5 use pysimplegui for directory selection.
 - ``[ ]`` 5 the file name suffix could be optional instead of `clip`.
 - ``[ ]`` 6 better/colorful output using click and colorama.
 - ``[ ]`` 6 icon for standalone Windows version.
