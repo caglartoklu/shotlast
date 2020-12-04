@@ -57,12 +57,6 @@ _private/*
 
 .pylint.d/
 
-spyonde.spec
+*.spec
 README.rst.html
-make_all.bat
-make_clean.bat
-make_lint.bat
-make_test.bat
-trial/*
-examples/*.ipynb
-
+v1/
