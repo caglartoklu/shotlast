@@ -147,7 +147,7 @@ Development Environment
     pip install pyinstaller  # makepile uses this.
     pip install rst2html5  # makepile uses this.
 
-makepile can also use `cloc https://github.com/AlDanial/cloc`_ to count the lines in the project.
+makepile can also use `cloc <https://github.com/AlDanial/cloc>`_ to count the lines in the project.
 
 
 
