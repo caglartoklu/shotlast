@@ -157,7 +157,7 @@ To Do
 - ``[ ]`` 5 the file name suffix could be optional instead of `clip`.
 - ``[ ]`` 6 better/colorful output using click and colorama.
 - ``[ ]`` 6 icon for standalone Windows version.
-- ``[ ]`` 6 if there is a file name clash, automatically add a UID.
+- ``[x]`` 6 if there is a file name clash, automatically add a UID.
 - ``[ ]`` 6 open the target directory in explorer/finder etc.
 - ``[ ]`` 6 standalone Windows version.
 - ``[ ]`` 6 test on Linux.

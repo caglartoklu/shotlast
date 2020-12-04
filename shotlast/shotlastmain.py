@@ -19,6 +19,7 @@ import os
 import pathlib
 import platform
 import time
+import uuid
 from PIL import ImageChops
 from PIL import ImageGrab
 import click
@@ -58,12 +59,27 @@ def get_datetime_stamp(sep_date="", sep_group="_", sep_time="", moment=None):
     return stamp
 
 
-def build_file_name():
+def build_only_file_name(prefix="clip"):
     """
     Returns a string like "clip_20121212_120102" without file extension.
     """
-    file_name = "clip_" + get_datetime_stamp()
+    file_name = prefix + "_" + get_datetime_stamp()
     return file_name
+
+
+def build_full_file_name(target_dir, file_format="png"):
+    only_file_name = build_only_file_name()
+    full_file_name = os.path.join(
+        target_dir, only_file_name) + "." + file_format
+
+    if os.path.isfile(full_file_name):
+        # there is a file name clash.
+        # add some UUID to avoid it.
+        uuid1 = str(uuid.uuid1())
+        full_file_name = os.path.join(
+            target_dir, only_file_name) + "_" + uuid1 + "." + file_format
+
+    return full_file_name
 
 
 def is_same_image(image1, image2):
@@ -97,18 +113,18 @@ def start_shots(target_dir, sleep_duration=2):
     print("sleep_duration:", sleep_duration)
     print("press ctrl c to end.")
     image0 = None  # previous
+    file_format = "png"
     while True:
         time.sleep(sleep_duration)
 
         image1 = ImageGrab.grabclipboard()
+        # <class 'PIL.BmpImagePlugin.DibImageFile'>
         if image1 is None:
             # could not find an image, possibly we have text.
             continue
 
-        file_format = "png"
-        full_file_name = os.path.join(
-            target_dir, build_file_name()) + "." + file_format
         if not is_same_image(image0, image1):
+            full_file_name = build_full_file_name(target_dir, file_format)
             image1.save(full_file_name, file_format.upper())
             print("saved image:", full_file_name)
         image0 = image1
