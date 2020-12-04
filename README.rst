@@ -8,8 +8,7 @@ Watches clipboard and automatically saves any new images.
 After run, this program will watch the clipboard.
 
 When a new image is detected, it saves the contents of clipboard with date and time
-(year to second) information, such as:
-`clip_20201203_101701.png`
+(year to second) information, such as: `clip_20201203_101701.png`
 
 - It never deletes a previous image.
 - It is fully automatic, you simply fill the clipboard from any source. shotlast does the rest.
@@ -154,14 +153,16 @@ To Do
 ==============================
 
 - ``[ ]`` 4 create a sub folder in target_dir
-- ``[ ]`` 5 better/colorful output using click and colorama.
-- ``[ ]`` 5 icon for standalone Windows version.
-- ``[ ]`` 5 if there is a file name clash, automatically add a UID.
-- ``[ ]`` 5 open the target directory in explorer/finder etc.
-- ``[ ]`` 5 standalone Windows version.
-- ``[ ]`` 5 test on Linux.
-- ``[ ]`` 5 test on macOS.
-- ``[ ]`` 5 upload to pypi.
+- ``[ ]`` 5 use pysimplegui for directory selection.
+- ``[ ]`` 5 the file name suffix could be optional instead of `clip`.
+- ``[ ]`` 6 better/colorful output using click and colorama.
+- ``[ ]`` 6 icon for standalone Windows version.
+- ``[ ]`` 6 if there is a file name clash, automatically add a UID.
+- ``[ ]`` 6 open the target directory in explorer/finder etc.
+- ``[ ]`` 6 standalone Windows version.
+- ``[ ]`` 6 test on Linux.
+- ``[ ]`` 6 test on macOS.
+- ``[ ]`` 6 upload to pypi.
 - ``[ ]`` 8 text is not supported yet, should we support it?
 - ``[x]`` 3 add requirements file.
 - ``[x]`` 4 upload to Github.
