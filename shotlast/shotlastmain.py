@@ -114,10 +114,17 @@ def is_same_image(image1, image2):
 
 
 def start_shots(target_dir, sleep_duration=2):
-    print("started shotlast.")
-    print("target_dir:", target_dir)
-    print("sleep_duration:", sleep_duration)
-    print("press ctrl c to end.")
+    click.secho("started shotlast.")
+
+    click.secho("target_dir: ", nl=False)
+    click.secho(target_dir, fg="yellow")
+
+    click.secho("sleep_duration: ", nl=False)
+    click.secho(str(sleep_duration), fg="yellow")
+
+    click.secho("press ", nl=False)
+    click.secho("ctrl c", fg="magenta", nl=False)
+    click.secho(" to end.")
     image0 = None  # previous
     file_format = "png"
     while True:
@@ -131,8 +138,14 @@ def start_shots(target_dir, sleep_duration=2):
 
         if not is_same_image(image0, image1):
             full_file_name = build_full_file_name(target_dir, file_format)
+
+            full_file_name = os.path.normpath(full_file_name)
+            # the line above is required since PySimpleGUI uses / on Windows.
+            # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
+
             image1.save(full_file_name, file_format.upper())
-            print("saved image:", full_file_name)
+            click.secho("saved image: ", nl=False)
+            click.secho(full_file_name, fg="green")
         image0 = image1
 
 
@@ -275,12 +288,12 @@ def main():
         settings["target_dir"] = target_dir
 
     if target_dir is None:
-        print("A target directory is not selected.")
+        click.secho("A target directory is not selected.", fg="red")
         return
 
     if not os.path.isdir(target_dir):
-        print("Target is not a valid directory:")
-        print(target_dir)
+        click.secho("Target is not a valid directory:", fg="red")
+        click.secho(target_dir, fg="yellow")
         return
 
     click.launch(target_dir)
