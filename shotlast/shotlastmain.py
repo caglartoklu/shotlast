@@ -117,7 +117,7 @@ def start_shots(target_dir, sleep_duration=2):
     click.secho("started shotlast.")
 
     click.secho("target_dir: ", nl=False)
-    click.secho(target_dir, fg="yellow")
+    click.secho(str(target_dir), fg="yellow")
 
     click.secho("sleep_duration: ", nl=False)
     click.secho(str(sleep_duration), fg="yellow")
@@ -145,7 +145,7 @@ def start_shots(target_dir, sleep_duration=2):
 
             image1.save(full_file_name, file_format.upper())
             click.secho("saved image: ", nl=False)
-            click.secho(full_file_name, fg="green")
+            click.secho(str(full_file_name), fg="green")
         image0 = image1
 
 
@@ -292,7 +292,7 @@ def main():
 
     if not os.path.isdir(target_dir):
         click.secho("Target is not a valid directory:", fg="red")
-        click.secho(target_dir, fg="yellow")
+        click.secho(str(target_dir), fg="yellow")
         return
 
     click.launch(target_dir)
