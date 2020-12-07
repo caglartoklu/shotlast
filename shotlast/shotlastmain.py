@@ -131,9 +131,19 @@ def start_shots(target_dir, sleep_duration=2):
         time.sleep(sleep_duration)
 
         image1 = ImageGrab.grabclipboard()
+
+        # print(type(image1))
         # <class 'PIL.BmpImagePlugin.DibImageFile'>
+        # <class 'PIL.PngImagePlugin.PngImageFile'>
+        type_as_str = str(type(image1))
+
         if image1 is None:
             # could not find an image, possibly we have text.
+            continue
+
+        if "ImageFile" not in type_as_str:
+            # for example, if there is a file in the clipboard,
+            # image will be a list.
             continue
 
         if not is_same_image(image0, image1):
