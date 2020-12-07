@@ -12,7 +12,7 @@ import setuptools
 
 setuptools.setup(
     name="shotlast",
-    version="0.1.0",
+    version="0.1.1",
     url="https://github.com/caglartoklu/shotlast",
 
     author="Caglar Toklu",
