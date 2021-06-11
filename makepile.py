@@ -99,6 +99,16 @@ def install():
     os.system(cmd)
 
 
+def run():
+    r"""
+    Runs the package without installing.
+    cmd = "python shotlast/shotlastmain.py"
+    """
+    cmd = "python shotlast/shotlastmain.py"
+    print(cmd)
+    os.system(cmd)
+
+
 def uninstall():
     r"""
     Uninstalls the package using pip.
