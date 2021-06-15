@@ -4,7 +4,7 @@
 
 """
 shotlast
-Watches clipboard and automatically saves any new images.
+Watches clipboard and automatically saves any new images, text and files.
 """
 
 
@@ -12,6 +12,9 @@ Watches clipboard and automatically saves any new images.
 # pylint: disable=empty-docstring
 # pylint: disable=invalid-name
 # pylint: disable=line-too-long
+# pylint: disable=broad-except
+# pylint: disable=too-many-nested-blocks
+# pylint: disable=too-many-statements
 
 import argparse
 import datetime
@@ -173,7 +176,8 @@ def start_shots(target_dir, sleep_duration=2):
 
                 file_format = "png"
                 if not is_same_image(image0, image1):
-                    full_file_name = build_full_file_name(target_dir, file_format)
+                    full_file_name = build_full_file_name(
+                        target_dir, file_format)
 
                     full_file_name = os.path.normpath(full_file_name)
                     # the line above is required since PySimpleGUI uses / on Windows.
@@ -196,7 +200,8 @@ def start_shots(target_dir, sleep_duration=2):
             elif text1.strip() == "":
                 continue
             elif text0 != text1:
-                full_file_name = build_full_file_name(target_dir, file_format="txt")
+                full_file_name = build_full_file_name(
+                    target_dir, file_format="txt")
 
                 full_file_name = os.path.normpath(full_file_name)
                 # the line above is required since PySimpleGUI uses / on Windows.
@@ -286,7 +291,7 @@ def choose_target_dir_with_sg(default_dir):
     chosen_dir = None
     while True:
         event, values = window.read()
-        if event in {sg.WIN_CLOSED, "Exit"}:
+        if event in {sg.WIN_CLOSED, "Exit"}:  # pylint: disable=no-else-break
             break
         elif event == "Submit":
             chosen_dir = values["__directory"]
