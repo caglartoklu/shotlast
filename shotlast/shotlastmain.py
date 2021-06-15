@@ -18,12 +18,14 @@ import datetime
 import os
 import pathlib
 import platform
+import shutil
 import time
 import uuid
 from PIL import ImageChops
 from PIL import ImageGrab
 import click
 import PySimpleGUI as sg
+import pyperclip
 
 
 sg.theme("DarkGrey7")
@@ -125,38 +127,91 @@ def start_shots(target_dir, sleep_duration=2):
     click.secho("press ", nl=False)
     click.secho("ctrl c", fg="magenta", nl=False)
     click.secho(" to end.")
+
+    file0 = None  # previous
+    text0 = None  # previous
     image0 = None  # previous
-    file_format = "png"
+
     while True:
         time.sleep(sleep_duration)
 
-        image1 = ImageGrab.grabclipboard()
+        try:
+            # try an image
+            image1 = ImageGrab.grabclipboard()
+            # print(type(image1))
 
-        # print(type(image1))
-        # <class 'PIL.BmpImagePlugin.DibImageFile'>
-        # <class 'PIL.PngImagePlugin.PngImageFile'>
-        type_as_str = str(type(image1))
+            # print(type(image1))
+            # <class 'PIL.BmpImagePlugin.DibImageFile'>
+            # <class 'PIL.PngImagePlugin.PngImageFile'>
+            type_as_str = str(type(image1))
+            # if clipboard contains text: <class 'NoneType'>
+            # if copied an image from Twitter: <class 'list'>
 
-        if image1 is None:
-            # could not find an image, possibly we have text.
-            continue
+            if isinstance(image1, list):
+                # for example, if there is a file in the clipboard,
+                # image will be a list.
+                if len(image1) == 1:
+                    if isinstance(image1[0], str):
+                        # we have a list of str with 1 item.
+                        # this is a path to file, such as:
+                        # <class 'list'>
+                        # 0 <class 'str'> C:\Users\CAGLAR~1.TOK\AppData\Local\Temp\Ew_reXQWQAMWgIL-1.jpg
+                        # simply copy that file to clip path:
+                        if file0 != image1[0]:
+                            # this is a new file.
+                            shutil.copy(image1[0], target_dir)
+                            click.secho("saved image: ", nl=False, fg="yellow")
+                            click.secho(str(image1[0]), fg="yellow")
 
-        if "ImageFile" not in type_as_str:
-            # for example, if there is a file in the clipboard,
-            # image will be a list.
-            continue
+                            file0 = image1[0]
+                continue
 
-        if not is_same_image(image0, image1):
-            full_file_name = build_full_file_name(target_dir, file_format)
+            if "ImageFile" in type_as_str:
+                # examples:
+                # <class 'PIL.BmpImagePlugin.DibImageFile'>
+                # <class 'PIL.PngImagePlugin.PngImageFile'>
 
-            full_file_name = os.path.normpath(full_file_name)
-            # the line above is required since PySimpleGUI uses / on Windows.
-            # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
+                file_format = "png"
+                if not is_same_image(image0, image1):
+                    full_file_name = build_full_file_name(target_dir, file_format)
 
-            image1.save(full_file_name, file_format.upper())
-            click.secho("saved image: ", nl=False)
-            click.secho(str(full_file_name), fg="green")
-        image0 = image1
+                    full_file_name = os.path.normpath(full_file_name)
+                    # the line above is required since PySimpleGUI uses / on Windows.
+                    # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
+
+                    image1.save(full_file_name, file_format.upper())
+
+                    click.secho("saved image: ", nl=False, fg="blue")
+                    click.secho(str(full_file_name), fg="blue")
+            image0 = image1
+        except Exception as ex1:
+            print(repr(ex1))
+            image0 = None
+
+        try:
+            # try text
+            text1 = pyperclip.paste()
+            if text1 is None:  # pylint: disable=no-else-continue
+                continue
+            elif text1.strip() == "":
+                continue
+            elif text0 != text1:
+                full_file_name = build_full_file_name(target_dir, file_format="txt")
+
+                full_file_name = os.path.normpath(full_file_name)
+                # the line above is required since PySimpleGUI uses / on Windows.
+                # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
+
+                handle = open(full_file_name, "wt", encoding="utf8")
+                handle.write(text1)
+                handle.close()
+
+                click.secho("saved text: ", nl=False, fg="green")
+                click.secho(str(full_file_name), fg="green")
+            text0 = text1
+        except Exception as ex1:
+            print(repr(ex1))
+            text0 = None
 
 
 def get_candidate_dir():
