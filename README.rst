@@ -1,14 +1,14 @@
 shotlast
 =============================
 
-Watches clipboard and automatically saves any new images.
+Watches clipboard and automatically saves any new images, text and files.
 
 After run, this program will watch the clipboard.
 
-When a new image is detected, it saves the contents of clipboard with date and time
+When a new image/text/file is detected, it saves the contents of clipboard with date and time
 (year to second) information, such as: `clip_20201203_101701.png`
 
-- It never deletes a previous image.
+- It never deletes a previous image/text/file.
 - It is fully automatic, you simply fill the clipboard from any source. shotlast does the rest.
 - It is useful to save repetitive screenshots from Youtube, Udemy, online meetings, books etc.
 

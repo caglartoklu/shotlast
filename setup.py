@@ -18,7 +18,7 @@ setuptools.setup(
     author="Caglar Toklu",
     author_email="caglartoklu@gmail.com",
 
-    description="Watches clipboard and automatically saves any new images.",
+    description="Watches clipboard and automatically saves any new images/text/files.",
     long_description=open('README.rst').read(),
 
     packages=setuptools.find_packages(),
