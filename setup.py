@@ -28,6 +28,7 @@ setuptools.setup(
         "click",
         "Pillow",
         "PySimpleGUI",
+        "pyperclip",
     ],
 
     # https://pypi.org/classifiers/

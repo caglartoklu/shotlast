@@ -36,6 +36,13 @@ shotlast then can be used from command line as follows:
     shotlast
     shotlast C:\Downloads\Pictures
 
+
+Installation Notes for Windows
+------------------------------------
+
+1 PATH variables
+....................................
+
 Note that, on Windows, ``C:\Python3x\Scripts`` directory is NOT automatically added to `PATH` variables.
 It is advised to add this directory to `PATH` variables.
 
@@ -46,9 +53,45 @@ or, launch it with a command like this:
     C:\Python37\Scripts\shotlast.exe
 
 
+Installation Notes for Linux
+------------------------------------
+
+1 Tkinter
+....................................
+
+
+Tkinter is not installed on some Linux derivatives by default.
+For Debian Linux derivatives, it is installed by:
+
+::
+
+    sudo apt-get install python3-tk
+
+
+2 copy/paste mechanism
+....................................
+
+pyperclip (the clipboard library used by shotlast)
+requires a copy/paste mechanisms for Linux derivatives.
+If no mechanism is found, pyperclip will raise a
+`NotImplementedError <https://pyperclip.readthedocs.io/en/latest/index.html#not-implemented-error>`_
+.
+
+A copy/paste mechanisms must be provided by installing one of the following:
+
+``sudo apt-get install xsel`` to install the xsel utility.
+
+``sudo apt-get install xclip`` to install the xclip utility.
+
+``pip install gtk`` to install the gtk Python module.
+
+``pip install PyQt4`` to install the PyQt4 Python module.
+
+
+
 
 Command Line Options
-----------------------
+=============================
 
 ::
 
@@ -97,7 +140,7 @@ Tested and developed with Python 3.7.4 on Windows 10.
 **Linux**
 
 Untested but it is expected to work.
-Waiting for comments from macOS users.
+Waiting for comments from Linux users.
 
 
 **macOS**
