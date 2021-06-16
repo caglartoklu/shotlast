@@ -56,6 +56,9 @@ or, launch it with a command like this:
 Installation Notes for Linux
 ------------------------------------
 
+Currently, Linux is not supported, working on it.
+See `Issue 3 "Linux Feedback" <https://github.com/caglartoklu/shotlast/issues/3>`_
+
 1 Tkinter
 ....................................
 
@@ -139,8 +142,8 @@ Tested and developed with Python 3.7.4 on Windows 10.
 
 **Linux**
 
-Untested but it is expected to work.
-Waiting for comments from Linux users.
+Currently, Linux is not supported, working on it.
+See `Issue 3 "Linux Feedback" <https://github.com/caglartoklu/shotlast/issues/3>`_
 
 
 **macOS**
