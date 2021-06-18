@@ -15,6 +15,8 @@ Watches clipboard and automatically saves any new images, text and files.
 # pylint: disable=broad-except
 # pylint: disable=too-many-nested-blocks
 # pylint: disable=too-many-statements
+# pylint: disable=too-few-public-methods
+# pylint: disable=useless-super-delegation
 
 import argparse
 import datetime
@@ -22,6 +24,7 @@ import os
 import pathlib
 import platform
 import shutil
+import sys
 import time
 import uuid
 from PIL import ImageChops
@@ -118,7 +121,140 @@ def is_same_image(image1, image2):
     return same
 
 
+class ShotSaver:
+    def __init__(self, target_dir: str) -> None:
+        self.text0 = ""  # previous text
+        self.text1 = ""  # current text
+        self.image0 = None  # previous image
+        self.image1 = None  # current image
+        self.file0 = None  # previous file
+        self.file1 = None  # current file
+        self.target_dir = target_dir
+
+    def save_text(self):
+        try:
+            # try text
+            text1 = pyperclip.paste()
+            if text1 is None:  # pylint: disable=no-else-return
+                return
+            elif text1.strip() == "":
+                return
+            elif self.text0 != text1:
+                full_file_name = build_full_file_name(
+                    self.target_dir, file_format="txt")
+
+                full_file_name = os.path.normpath(full_file_name)
+                # the line above is required since PySimpleGUI uses / on Windows.
+                # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
+
+                handle = open(full_file_name, "wt", encoding="utf8")
+                handle.write(text1)
+                handle.close()
+
+                click.secho("saved text: ", nl=False, fg="green")
+                click.secho(str(full_file_name), fg="green")
+                self.text0 = text1
+        except Exception as ex1:
+            self.text0 = None
+            print(repr(ex1))
+
+
+class ShotSaverForWindows(ShotSaver):
+    def __init__(self, target_dir: str):
+        super().__init__(target_dir)
+
+    def save_image(self):
+        """
+        On Windows, this function saves an image or file.
+        """
+        try:
+            # try an image
+            image1 = ImageGrab.grabclipboard()
+            # print(type(image1))
+
+            # the result can be an image or a list.
+            # if it is the latter, it can be any type of file.
+
+            # print(type(image1))
+            type_as_str = str(type(image1))
+            # if clipboard contains text: <class 'NoneType'>
+            # if copied an file (for example, an image copied form browser): <class 'list'>
+            # if it contains an image:
+            #   <class 'PIL.BmpImagePlugin.DibImageFile'>
+            #   <class 'PIL.PngImagePlugin.PngImageFile'>
+
+            if isinstance(image1, list):
+                # for example, if there is a file in the clipboard,
+                # image will be a list.
+                if len(image1) == 1:
+                    if isinstance(image1[0], str):
+                        # we have a list of str with 1 item.
+                        # this is a path to file, such as:
+                        # <class 'list'>
+                        # 0 <class 'str'> C:\Users\CAGLAR~1.TOK\AppData\Local\Temp\Ew_reXQWQAMWgIL-1.jpg
+                        # simply copy that file to clip path:
+                        if self.file0 != image1[0]:
+                            # this is a new file.
+                            shutil.copy(image1[0], self.target_dir)
+                            click.secho("saved image: ", nl=False, fg="yellow")
+                            click.secho(str(image1[0]), fg="yellow")
+
+                            self.file0 = image1[0]
+                else:
+                    print("can not handle multiple files.")
+            elif "ImageFile" in type_as_str:
+                # this is a single image, such as:
+                # <class 'PIL.BmpImagePlugin.DibImageFile'>
+                # <class 'PIL.PngImagePlugin.PngImageFile'>
+
+                file_format = "png"
+                if not is_same_image(self.image0, image1):
+                    full_file_name = build_full_file_name(
+                        self.target_dir, file_format)
+
+                    full_file_name = os.path.normpath(full_file_name)
+                    # the line above is required since PySimpleGUI uses / on Windows.
+                    # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
+
+                    image1.save(full_file_name, file_format.upper())
+
+                    click.secho("saved image: ", nl=False, fg="blue")
+                    click.secho(str(full_file_name), fg="blue")
+                self.image0 = image1
+        except Exception as ex1:
+            self.file0 = None
+            self.image0 = None
+            print(repr(ex1))
+
+    def save_shot(self):
+        self.save_text()
+        self.save_image()
+
+
+class ShotSaverForLinux(ShotSaver):
+    def __init__(self, target_dir: str):
+        super().__init__(target_dir)
+
+    def save_shot(self):
+        self.save_text()
+
+
 def start_shots(target_dir, sleep_duration=2):
+    # https://docs.python.org/3/library/sys.html#sys.platform
+    if sys.platform.startswith('win32'):
+        shotter = ShotSaverForWindows(target_dir)
+    elif sys.platform.startswith('linux'):
+        shotter = ShotSaverForLinux(target_dir)
+    elif sys.platform.startswith('darwin'):
+        msg = "macOS is not supported. yet."
+        raise NotImplementedError(msg)
+    elif sys.platform.startswith('freebsd'):
+        msg = "FreeBSD is not supported. yet."
+        raise NotImplementedError(msg)
+    else:
+        msg = "Only Windows and Linux is supported."
+        raise NotImplementedError(msg)
+
     click.secho("started shotlast.")
 
     click.secho("target_dir: ", nl=False)
@@ -131,92 +267,9 @@ def start_shots(target_dir, sleep_duration=2):
     click.secho("ctrl c", fg="magenta", nl=False)
     click.secho(" to end.")
 
-    file0 = None  # previous
-    text0 = None  # previous
-    image0 = None  # previous
-
     while True:
+        shotter.save_shot()
         time.sleep(sleep_duration)
-
-        try:
-            # try an image
-            image1 = ImageGrab.grabclipboard()
-            # print(type(image1))
-
-            # print(type(image1))
-            # <class 'PIL.BmpImagePlugin.DibImageFile'>
-            # <class 'PIL.PngImagePlugin.PngImageFile'>
-            type_as_str = str(type(image1))
-            # if clipboard contains text: <class 'NoneType'>
-            # if copied an image from Twitter: <class 'list'>
-
-            if isinstance(image1, list):
-                # for example, if there is a file in the clipboard,
-                # image will be a list.
-                if len(image1) == 1:
-                    if isinstance(image1[0], str):
-                        # we have a list of str with 1 item.
-                        # this is a path to file, such as:
-                        # <class 'list'>
-                        # 0 <class 'str'> C:\Users\CAGLAR~1.TOK\AppData\Local\Temp\Ew_reXQWQAMWgIL-1.jpg
-                        # simply copy that file to clip path:
-                        if file0 != image1[0]:
-                            # this is a new file.
-                            shutil.copy(image1[0], target_dir)
-                            click.secho("saved image: ", nl=False, fg="yellow")
-                            click.secho(str(image1[0]), fg="yellow")
-
-                            file0 = image1[0]
-                continue
-
-            if "ImageFile" in type_as_str:
-                # examples:
-                # <class 'PIL.BmpImagePlugin.DibImageFile'>
-                # <class 'PIL.PngImagePlugin.PngImageFile'>
-
-                file_format = "png"
-                if not is_same_image(image0, image1):
-                    full_file_name = build_full_file_name(
-                        target_dir, file_format)
-
-                    full_file_name = os.path.normpath(full_file_name)
-                    # the line above is required since PySimpleGUI uses / on Windows.
-                    # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
-
-                    image1.save(full_file_name, file_format.upper())
-
-                    click.secho("saved image: ", nl=False, fg="blue")
-                    click.secho(str(full_file_name), fg="blue")
-            image0 = image1
-        except Exception as ex1:
-            print(repr(ex1))
-            image0 = None
-
-        try:
-            # try text
-            text1 = pyperclip.paste()
-            if text1 is None:  # pylint: disable=no-else-continue
-                continue
-            elif text1.strip() == "":
-                continue
-            elif text0 != text1:
-                full_file_name = build_full_file_name(
-                    target_dir, file_format="txt")
-
-                full_file_name = os.path.normpath(full_file_name)
-                # the line above is required since PySimpleGUI uses / on Windows.
-                # C:/Users/caglar/Desktop/gun05\clip_20201204_142219.png
-
-                handle = open(full_file_name, "wt", encoding="utf8")
-                handle.write(text1)
-                handle.close()
-
-                click.secho("saved text: ", nl=False, fg="green")
-                click.secho(str(full_file_name), fg="green")
-            text0 = text1
-        except Exception as ex1:
-            print(repr(ex1))
-            text0 = None
 
 
 def get_candidate_dir():
