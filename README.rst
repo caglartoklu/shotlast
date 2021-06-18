@@ -74,22 +74,13 @@ For Debian Linux derivatives, it is installed by:
 2 copy/paste mechanism
 ....................................
 
-pyperclip (the clipboard library used by shotlast)
-requires a copy/paste mechanisms for Linux derivatives.
-If no mechanism is found, pyperclip will raise a
-`NotImplementedError <https://pyperclip.readthedocs.io/en/latest/index.html#not-implemented-error>`_
-.
+shotlast uses `xclip <https://github.com/astrand/xclip>`_
+to save images from clipboard on Linux.
+On Debian derivatives, xclip can be installed as follows:
 
-A copy/paste mechanisms must be provided by installing one of the following:
+::
 
-``sudo apt-get install xsel`` to install the xsel utility.
-
-``sudo apt-get install xclip`` to install the xclip utility.
-
-``pip install gtk`` to install the gtk Python module.
-
-``pip install PyQt4`` to install the PyQt4 Python module.
-
+    sudo apt-get install xclip
 
 
 
@@ -148,8 +139,7 @@ See `Issue 3 "Linux Feedback" <https://github.com/caglartoklu/shotlast/issues/3>
 
 **macOS**
 
-Untested but it is expected to work.
-Waiting for comments from macOS users.
+Currently, macOS is not supported, working on it.
 
 
 

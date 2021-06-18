@@ -85,6 +85,19 @@ def _multiline_str_to_list(haystack):
     list1 = [x.strip() for x in list1 if x.strip()]
     return list1
 
+
+def _get_python_command():
+    # TODO: 6 what about macOS and FreeBSD?
+    if sys.platform.startswith('win32'):  # pylint: disable=no-else-return
+        return "python"
+    else:
+        return "python3"
+
+
+def _get_pip_command():
+    return "pip"
+
+
 # BEGIN TARGETs SECTION _________________________________________
 
 
@@ -94,7 +107,9 @@ def install():
     cmd = "pip install -e ."
     """
     # cmd = "python setup.py install"
-    cmd = "python -m pip install -e ."
+    python = _get_python_command()
+    pip = _get_pip_command()
+    cmd = f"{python} -m {pip} install -e ."
     print(cmd)
     os.system(cmd)
 
@@ -104,7 +119,9 @@ def run():
     Runs the package without installing.
     cmd = "python shotlast/shotlastmain.py"
     """
-    cmd = "python shotlast/shotlastmain.py"
+    python = _get_python_command()
+    # pip = _get_pip_command()
+    cmd = f"{python} shotlast/shotlastmain.py"
     print(cmd)
     os.system(cmd)
 
@@ -113,7 +130,9 @@ def uninstall():
     r"""
     Uninstalls the package using pip.
     """
-    cmd = "python -m pip uninstall shotlast"
+    python = _get_python_command()
+    pip = _get_pip_command()
+    cmd = f"{python} -m f{pip} uninstall shotlast"
     print(cmd)
     os.system(cmd)
 

@@ -17,6 +17,8 @@ Watches clipboard and automatically saves any new images, text and files.
 # pylint: disable=too-many-statements
 # pylint: disable=too-few-public-methods
 # pylint: disable=useless-super-delegation
+# pylint: disable=no-self-use
+# pylint: disable=wrong-import-position
 
 import argparse
 import datetime
@@ -24,11 +26,16 @@ import os
 import pathlib
 import platform
 import shutil
+import subprocess
 import sys
 import time
 import uuid
 from PIL import ImageChops
-from PIL import ImageGrab
+# ImportError: ImageGrab is macOS and Windows only
+if sys.platform.startswith('win32') or sys.platform.startswith("darwin"):
+    from PIL import ImageGrab
+else:
+    print("skipped importing PIL.ImageGrab: Windows and macOS only.")
 import click
 import PySimpleGUI as sg
 import pyperclip
@@ -71,6 +78,27 @@ def get_datetime_stamp(sep_date="", sep_group="_", sep_time="", moment=None):
         moment = datetime.datetime.now()
     stamp = moment.strftime(date_format)
     return stamp
+
+
+def get_process_output(process_executable: str, arguments: str):
+    """
+    Returns the output of the provided process.
+    This function is compatible with both CPython and Jython.
+
+    Arguments:
+        process_executable : string, the full path of the executable.
+        arguments : string, the arguments to pass to the process.
+
+    Requirements:
+        import subprocess
+
+    Example:
+        print(get_process_output("ls", "-al"))
+    """
+    lst_arguments = [process_executable] + arguments.split()
+    output = subprocess.Popen(lst_arguments,
+                              stdout=subprocess.PIPE).communicate()[0]
+    return output
 
 
 def build_only_file_name(prefix="clip"):
@@ -122,6 +150,10 @@ def is_same_image(image1, image2):
 
 
 class ShotSaver:
+    """
+    The base class for OS-specific shot savers.
+    """
+
     def __init__(self, target_dir: str) -> None:
         self.text0 = ""  # previous text
         self.text1 = ""  # current text
@@ -132,6 +164,9 @@ class ShotSaver:
         self.target_dir = target_dir
 
     def save_text(self):
+        """
+        Uses cross-platform pyperclip for saving text from clipboard.
+        """
         try:
             # try text
             text1 = pyperclip.paste()
@@ -158,12 +193,29 @@ class ShotSaver:
             self.text0 = None
             print(repr(ex1))
 
+    def save_image(self):
+        """
+        Each OS specific class must override this method.
+        """
+        msg = "Do not call save_image() of the base class."
+        raise NotImplementedError(msg)
+
+    def save_shot(self):
+        """
+        Driver code to be used from all child classes.
+        """
+        self.save_text()
+        self.save_image()
+
 
 class ShotSaverForWindows(ShotSaver):
     def __init__(self, target_dir: str):
         super().__init__(target_dir)
 
     def save_image(self):
+        self._save_image_or_file()
+
+    def _save_image_or_file(self):
         """
         On Windows, this function saves an image or file.
         """
@@ -226,17 +278,126 @@ class ShotSaverForWindows(ShotSaver):
             self.image0 = None
             print(repr(ex1))
 
-    def save_shot(self):
-        self.save_text()
-        self.save_image()
-
 
 class ShotSaverForLinux(ShotSaver):
+    """
+    On Linux:
+        pyperclip: to save text
+        xclip: to save images
+    """
+
     def __init__(self, target_dir: str):
         super().__init__(target_dir)
 
-    def save_shot(self):
-        self.save_text()
+    def save_image(self):
+        self._save_image_with_xclip()
+
+    def _read_whole_file(self, file_name: str) -> bytes:
+        handle = open(file_name, "rb")
+        content = handle.read()
+        handle.close()
+        return content
+
+    def _is_same_content(self, file0: bytes, file1: bytes) -> bool:
+        """
+        Returns True if the file contents(bytes) are different,False otherwise.
+        """
+        assert isinstance(file0, (bytes, type(None)))
+        assert isinstance(file1, (bytes, type(None)))
+
+        if not file0 and not file1:  # pylint: disable=no-else-return
+            # return False if both of them are None.
+            return False
+        elif not file0:
+            # return False if previous value is None.
+            return False
+        elif len(file0) != len(file1):
+            # return False if their lengths are different.
+            return False
+        else:
+            # their length is same.
+            # compare values one by one.
+            equal = True
+            for i, _ in enumerate(file0):
+                if file0[i] != file1[i]:
+                    equal = False
+                    break
+            return equal
+
+    def _save_image_with_xclip(self):
+        """
+        Linux-specific image saver.
+        requires:
+            sudo apt-get install xclip
+
+        https://unix.stackexchange.com/questions/145131/copy-image-from-clipboard-to-file
+
+        alex@alex-VirtualBox:~/Documents$ xclip -selection clipboard -t TARGETS -o
+        TIMESTAMP
+        TARGETS
+        MULTIPLE
+        SAVE_TARGETS
+        image/png
+        image/bmp
+        image/x-bmp
+        image/x-MS-bmp
+        image/x-icon
+        image/x-ico
+        image/x-win-bitmap
+        image/vnd.microsoft.icon
+        application/ico
+        image/ico
+        image/icon
+        text/ico
+        image/jpeg
+        image/tiff
+
+        xclip -selection clipboard -t image/png -o > /tmp/clipboard.png
+        """
+        try:
+            args = "xclip -selection clipboard -t TARGETS -o"
+            output = get_process_output("xclip", args)  # output is now bytes
+            output = output.decode("utf-8")
+            output = output.splitlines()
+            for target_format in output:
+                if target_format.startswith("image/"):
+                    # target_format: "image/png"
+                    break
+            else:
+                target_format = None
+
+            # This function uses the a3rd party utility xclip.
+            # it saves the file form clipboard anyway.
+            # even though it is saved previously.
+            # then, it compares its contents against previous file contents.
+            # if they are same, it deletes the new one.
+
+            if target_format:
+                file_format = target_format.split("/")[1]  # png
+                full_file_name = build_full_file_name(
+                    self.target_dir, file_format)
+                full_file_name = os.path.normpath(full_file_name)
+
+                # modify a copy of the file name for shell:
+                full_file_name2 = full_file_name.replace(" ", "\\ ")
+                cmd = f"xclip -selection clipboard -t {target_format} -o > {full_file_name2}"
+
+                # retcode = subprocess.call(cmd, shell=False)
+                os.system(cmd)
+                file1 = self._read_whole_file(full_file_name)
+                if self._is_same_content(self.file0, file1):
+                    # deleting the file, because it is the same as previous one.
+                    os.remove(full_file_name)
+                else:
+                    click.secho("saved image: ", nl=False, fg="yellow")
+                    click.secho(full_file_name, fg="yellow")
+                    self.file0 = file1
+            else:
+                # print("An image format could not be found from xclip.")
+                pass
+        except Exception as ex1:
+            self.file0 = None
+            print(repr(ex1))
 
 
 def start_shots(target_dir, sleep_duration=2):
