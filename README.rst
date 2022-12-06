@@ -163,7 +163,7 @@ Shows the main menu of makepile.py and possible targets.
 
     python makepile.py
     Possible targets:
-    ['clean', 'install', 'linecount', 'pyinstaller', 'readme', 'uninstall']
+    ['clean', 'ctags', 'install', 'linecount', 'pyinstaller', 'readme', 'run', 'uninstall']
 
 Development Environment
 ---------------------------------

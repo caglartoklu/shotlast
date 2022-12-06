@@ -241,6 +241,18 @@ def linecount():
     os.system(cmd)
 
 
+def ctags():
+    r"""
+    Generates tags file using ctags.
+
+    Requires:
+    https://ctags.io/
+    """
+    cmd = "ctags -R --exclude=.git --exclude=.private --exclude=v1 shotlast makepile.py"
+    print(cmd)
+    os.system(cmd)
+
+
 def readme():
     r"""
     Converts README.rst to README.rst.html.
