@@ -236,7 +236,7 @@ def linecount():
     Requires:
     https://github.com/AlDanial/cloc
     """
-    cmd = "cloc . --exclude-dir=v1"
+    cmd = "cloc . --exclude-dir=.private"
     print(cmd)
     os.system(cmd)
 
@@ -246,9 +246,9 @@ def ctags():
     Generates tags file using ctags.
 
     Requires:
-    https://ctags.io/
+    https://ctags.sourceforge.net/
     """
-    cmd = "ctags -R --exclude=.git --exclude=.private --exclude=v1 shotlast makepile.py"
+    cmd = "ctags -R --exclude=.git --exclude=.private shotlast makepile.py"
     print(cmd)
     os.system(cmd)
 

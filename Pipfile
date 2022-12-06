@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+colorama = "*"
+click = "*"
+Pillow = "*"
+PySimpleGUI = "*"
+pyperclip = "*"
+
+[dev-packages]
+rst2html5 = "*"
+pylint = "*"
+pep8 = "*"
+autopep8 = "*"
+pyinstaller = "*"

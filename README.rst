@@ -168,16 +168,38 @@ Shows the main menu of makepile.py and possible targets.
 Development Environment
 ---------------------------------
 
+shotlast is configured to work with `Pipenv <https://pipenv.pypa.io/en/latest/>`_.
+It needs to be installed like this:
+
 ::
 
-    pip -m venv v1
-    cd v1
-    cd Scripts
-    activate
-    cd /path/to/shotlast_source_dir
-    pip install -r requirements.txt
+    pip install --user pipenv
+    # or
+    pip install pipenv
 
-makepile can also use `cloc <https://github.com/AlDanial/cloc>`_ to count the lines in the project.
+Then, after clonning the project, the environment can be created with the following commands:
+
+::
+
+    pipenv shell
+
+    # install default packages
+    pipenv install
+
+    # install both default and dev packages
+    pipenv install --dev
+
+A ``requirements.txt`` file is also provided for ``virtualenvwrapper``.
+It can be regenerated with the following command:
+
+::
+
+    pipenv requirements --dev > requirements.txt
+
+``makepile.py`` can also use the following tools:
+
+- `cloc <https://github.com/AlDanial/cloc>`_ to count the lines in the project.
+- `ctags <https://ctags.sourceforge.net/>`_ to generate tags.
 
 
 
