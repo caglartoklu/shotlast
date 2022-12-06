@@ -45,6 +45,8 @@ nosetests.xml
 .spyproject/*
 .idea/
 .idea/*
+tags
+Session.vim
 
 .draft/
 .draft/*
